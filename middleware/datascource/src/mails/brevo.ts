@@ -1,7 +1,7 @@
 // DOCS: https://developers.brevo.com/docs
 import SibApiV3Sdk from "@getbrevo/brevo";
 
-const BREVO_API_KEY = process.env.BREVO_API_KEY;
+const BREVO_API_KEY = "";
 
 export enum BrevoTemplates {
   EXAMPLE_TEMPLATE_ONE = 1,
@@ -42,18 +42,6 @@ export interface BrevoContact {
 export interface BrevoRecipient {
   email: string;
   name?: string;
-}
-
-interface BrevoAttachment {
-  name: string;
-  value: string;
-}
-
-export interface BrevoData {
-  id?: number | string | null;
-  firstname?: string;
-  lastname?: string;
-  productKey?: string;
 }
 
 export interface BrevoError {
@@ -109,9 +97,7 @@ export async function createBrevoContact(
 // TRANSACTIONAL ------------------------------------------------------
 export async function sendBrevoEmail(
   recipients: BrevoRecipient[],
-  templateId: BrevoTemplates,
-  attachments?: BrevoAttachment[] | null,
-  data?: BrevoData
+  templateId: BrevoTemplates
 ) {
   const apiInstanceTransactional = new SibApiV3Sdk.TransactionalEmailsApi();
 
@@ -120,28 +106,9 @@ export async function sendBrevoEmail(
     BREVO_API_KEY
   );
   const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
-  const isProd = process.env.currentEnv === "production";
 
   sendSmtpEmail.to = recipients;
   sendSmtpEmail.templateId = templateId;
-
-  sendSmtpEmail.tags = isProd ? [] : ["test"];
-
-  if (data) {
-    const { productKey } = data;
-    sendSmtpEmail.params = data;
-
-    const product = productKey === "Sterbegeldversicherung" ? "SGV" : "RLV";
-
-    if (product) sendSmtpEmail.tags.push(`Product: ${product}`);
-  }
-
-  if (attachments && attachments.length) {
-    sendSmtpEmail.attachment = attachments.map((attachment) => ({
-      name: attachment.name,
-      content: attachment.value,
-    }));
-  }
 
   return apiInstanceTransactional.sendTransacEmail(sendSmtpEmail);
 }

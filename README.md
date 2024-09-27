@@ -41,7 +41,6 @@ This integration provides several functions to interact with Brevo's API:
 import { brevoGetAccount } from "./brevo";
 
 const accountInfo = await brevoGetAccount();
-console.log(accountInfo);
 ```
 
 ### Create a Contact
@@ -58,7 +57,6 @@ const contactData: BrevoContact = {
 };
 
 const newContact = await createBrevoContact(email, contactData, [BrevoLists.EXAMPLE_LIST_ONE]);
-console.log(newContact);
 ```
 
 ### Send a Transactional Email
@@ -70,7 +68,6 @@ const recipients = [{ email: "recipient@example.com" }];
 const templateId = BrevoTemplates.EXAMPLE_TEMPLATE_ONE;
 
 const emailResult = await sendBrevoEmail(recipients, templateId);
-console.log(emailResult);
 ```
 
 ### Error Handling

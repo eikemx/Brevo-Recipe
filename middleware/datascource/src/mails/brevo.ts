@@ -1,7 +1,7 @@
 // DOCS: https://developers.brevo.com/docs
 import SibApiV3Sdk from "@getbrevo/brevo";
 
-const BREVO_API_KEY = "";
+const BREVO_API_KEY = "api-key";
 
 export enum BrevoTemplates {
   EXAMPLE_TEMPLATE_ONE = 1,
@@ -15,11 +15,6 @@ export enum BrevoLists {
   EXAMPLE_LIST_THREE = 3,
 }
 
-export enum BrevoProduct {
-  product_one = 1,
-  product_two = 2,
-}
-
 export enum BrevoGender {
   woman = 1,
   man = 2,
@@ -31,17 +26,11 @@ export interface BrevoContact {
   ANREDE?: string;
   GEBURTSTAG?: string;
   TELEFONNUMMER?: string;
-  PRODUCT?: BrevoProduct;
   ANTRAGSNUMMER?: string;
   OPT_IN?: boolean;
   TRANSACTIONAL_ID?: string;
   TRANSACTIONAL_PRODUCT?: string;
   TRANSACTIONAL_DATE?: string;
-}
-
-export interface BrevoRecipient {
-  email: string;
-  name?: string;
 }
 
 export interface BrevoError {

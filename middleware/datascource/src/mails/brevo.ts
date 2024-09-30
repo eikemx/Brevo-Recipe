@@ -1,4 +1,5 @@
 // DOCS: https://developers.brevo.com/docs
+import logger from "./logger"; // Import your favorite logger
 import SibApiV3Sdk from "@getbrevo/brevo";
 
 const BREVO_API_KEY = "api-key";
@@ -31,6 +32,11 @@ export interface BrevoContact {
   TRANSACTIONAL_ID?: string;
   TRANSACTIONAL_PRODUCT?: string;
   TRANSACTIONAL_DATE?: string;
+}
+
+export interface BrevoRecipient {
+  email: string;
+  name?: string;
 }
 
 export interface BrevoError {

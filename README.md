@@ -84,6 +84,23 @@ try {
 }
 ```
 
+## Testing
+
+This project uses Jest for unit testing. To run the tests, use the following command:
+
+```
+npm test
+```
+
+### Test Structure
+
+The test suite is located in `./brevo.spec.ts` and covers the main functionalities of the Brevo integration:
+
+- Account information retrieval
+- Contact creation
+- Transactional email sending
+- Error handling
+
 ## Customization
 
 ### Templates and Lists

@@ -5,10 +5,12 @@ import {
   brevoGetAccount,
   createBrevoContact,
   sendBrevoEmail,
+  handleBrevoError,
   BrevoTemplates,
   BrevoLists,
   BrevoContact,
   BrevoError,
+  BrevoGender,
 } from "./brevo";
 
 jest.mock("@getbrevo/brevo");
@@ -103,6 +105,95 @@ describe("Brevo Integration Tests", () => {
         expect.objectContaining({
           to: recipients,
           templateId,
+        })
+      );
+    });
+  });
+  describe("handleBrevoError", () => {
+    it("should log error and throw with error code", async () => {
+      const mockError: BrevoError = {
+        body: "Error body",
+        statusCode: 400,
+        request: "Request details",
+        code: "ERROR_CODE",
+        message: "Error message",
+      };
+      const mockLogger = { error: jest.fn() };
+
+      await expect(
+        handleBrevoError(mockError, "TestBreadcrumb", { testData: "value" })
+      ).rejects.toThrow("ERROR_CODE");
+      expect(mockLogger.error).toHaveBeenCalledWith(
+        "TestBreadcrumb",
+        expect.objectContaining({
+          message: "Error message",
+          data: expect.objectContaining({
+            data: { testData: "value" },
+            statusCode: 400,
+          }),
+        })
+      );
+    });
+  });
+  describe("Edge cases and input validation", () => {
+    it("should handle empty contact data", async () => {
+      const mockCreateContact = jest.fn().mockResolvedValue({ id: "123" });
+      SibApiV3Sdk.ContactsApi.mockImplementation(() => ({
+        setApiKey: jest.fn(),
+        createContact: mockCreateContact,
+      }));
+
+      const email = "test@example.com";
+      const attributes: BrevoContact = {};
+
+      await createBrevoContact(email, attributes);
+      expect(mockCreateContact).toHaveBeenCalledWith(
+        expect.objectContaining({
+          email,
+          attributes: {},
+          updateEnabled: true,
+        })
+      );
+    });
+
+    it("should handle invalid email for contact creation", async () => {
+      const mockCreateContact = jest
+        .fn()
+        .mockRejectedValue(new Error("Invalid email"));
+      SibApiV3Sdk.ContactsApi.mockImplementation(() => ({
+        setApiKey: jest.fn(),
+        createContact: mockCreateContact,
+      }));
+
+      const email = "invalid-email";
+      const attributes: BrevoContact = { FIRSTNAME: "John" };
+
+      await expect(createBrevoContact(email, attributes)).rejects.toThrow(
+        "Invalid email"
+      );
+    });
+  });
+  describe("BrevoGender enum usage", () => {
+    it("should correctly use BrevoGender enum in contact creation", async () => {
+      const mockCreateContact = jest.fn().mockResolvedValue({ id: "123" });
+      SibApiV3Sdk.ContactsApi.mockImplementation(() => ({
+        setApiKey: jest.fn(),
+        createContact: mockCreateContact,
+      }));
+
+      const email = "test@example.com";
+      const attributes: BrevoContact = {
+        FIRSTNAME: "Jane",
+        LASTNAME: "Doe",
+        ANREDE: BrevoGender.woman.toString(),
+      };
+
+      await createBrevoContact(email, attributes);
+      expect(mockCreateContact).toHaveBeenCalledWith(
+        expect.objectContaining({
+          attributes: expect.objectContaining({
+            ANREDE: "1",
+          }),
         })
       );
     });

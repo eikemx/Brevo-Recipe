@@ -1,3 +1,4 @@
+import dotenv from "dotenv";
 import logger from "./logger"; // Import your favorite logger
 import {
   BrevoContact,
@@ -10,6 +11,8 @@ import {
   handleBrevoError,
   sendBrevoEmail,
 } from "./brevo";
+
+dotenv.config();
 
 const users = [
   {
@@ -49,7 +52,7 @@ async function runBrevoWorkflow() {
     await sendTransactionalEmailToUser(specificUser.id, "ORDER_CONFIRMATION");
 
     logger.info("Brevo workflow completed successfully");
-  } catch (error) {
+  } catch (error: any) {
     logger.error("Error in Brevo workflow", { error });
   }
 }
@@ -70,7 +73,7 @@ async function syncUserToBrevoContact(user: (typeof users)[0]): Promise<void> {
       userId: user.id,
       brevoContactId: result.id,
     });
-  } catch (error) {
+  } catch (error: any) {
     await handleBrevoError(error, "syncUserToBrevoContact", {
       userId: user.id,
     });
@@ -86,7 +89,7 @@ async function sendPromotionalEmail(): Promise<void> {
       BrevoTemplates.EXAMPLE_TEMPLATE_ONE
     );
     logger.info("Promotional email sent", { messageId: result.messageId });
-  } catch (error) {
+  } catch (error: any) {
     await handleBrevoError(error, "sendPromotionalEmail");
   }
 }
@@ -123,7 +126,7 @@ async function sendTransactionalEmailToUser(
       messageId: result.messageId,
     });
     return result;
-  } catch (error) {
+  } catch (error: any) {
     return handleBrevoError(error, "sendTransactionalEmailToUser", {
       userId,
       transactionType,

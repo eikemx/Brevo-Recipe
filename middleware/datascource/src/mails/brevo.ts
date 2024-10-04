@@ -2,7 +2,7 @@
 import logger from "./logger"; // Import your favorite logger
 import SibApiV3Sdk from "@getbrevo/brevo";
 
-const BREVO_API_KEY = "api-key";
+const BREVO_API_KEY = process.env.BREVO_API_KEY || "";
 
 export enum BrevoTemplates {
   EXAMPLE_TEMPLATE_ONE = 1,

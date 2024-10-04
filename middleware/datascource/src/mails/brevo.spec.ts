@@ -13,7 +13,13 @@ import {
   BrevoGender,
 } from "./brevo";
 
+const mockLogger = {
+  info: jest.fn(),
+  error: jest.fn(),
+};
+
 jest.mock("@getbrevo/brevo");
+jest.mock("./logger", () => mockLogger);
 
 describe("Brevo Integration Tests", () => {
   const mockApiKey = "test-api-key";
@@ -21,6 +27,8 @@ describe("Brevo Integration Tests", () => {
   beforeEach(() => {
     jest.resetAllMocks();
     process.env.BREVO_API_KEY = mockApiKey;
+    mockLogger.info.mockClear();
+    mockLogger.error.mockClear();
   });
 
   describe("brevoGetAccount", () => {
@@ -118,7 +126,6 @@ describe("Brevo Integration Tests", () => {
         code: "ERROR_CODE",
         message: "Error message",
       };
-      const mockLogger = { error: jest.fn() };
 
       await expect(
         handleBrevoError(mockError, "TestBreadcrumb", { testData: "value" })

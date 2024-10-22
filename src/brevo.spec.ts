@@ -11,7 +11,7 @@ import {
   BrevoContact,
   BrevoError,
   BrevoGender,
-} from "./brevo";
+} from "./brevo.js";
 
 const mockLogger = {
   info: jest.fn(),

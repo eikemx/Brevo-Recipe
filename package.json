@@ -2,9 +2,10 @@
   "name": "brevo-typescript-node-recipe",
   "version": "1.0.0",
   "description": "A comprehensive integration of the Brevo API v3 using TypeScript and Node.js",
-  "main": "./middleware/datascource/src/mails/index.ts",
+  "main": "src/index.ts",
+  "type": "module",
   "scripts": {
-    "start": "ts-node ./middleware/datascource/src/mails/index.ts",
+    "start": "node --loader ts-node/esm src/index.ts",
     "test": "jest",
     "build": "tsc"
   },
@@ -17,7 +18,7 @@
   "author": "Eike Merx",
   "license": "",
   "dependencies": {
-    "@getbrevo/brevo": "^1.0.1"
+    "@getbrevo/brevo": "2.0.0-beta.4"
   },
   "devDependencies": {
     "@types/jest": "^29.5.13",

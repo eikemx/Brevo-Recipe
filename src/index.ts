@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import logger from "./logger"; // Import your favorite logger
+import logger from "./logger.js"; // Import your favorite logger
 import {
   BrevoContact,
   BrevoGender,
@@ -10,7 +10,7 @@ import {
   createBrevoContact,
   handleBrevoError,
   sendBrevoEmail,
-} from "./brevo";
+} from "./brevo.js";
 
 dotenv.config();
 
@@ -71,7 +71,7 @@ async function syncUserToBrevoContact(user: (typeof users)[0]): Promise<void> {
     ]);
     logger.info("User synced to Brevo contact", {
       userId: user.id,
-      brevoContactId: result.id,
+      brevoContactId: result.body.id,
     });
   } catch (error: any) {
     await handleBrevoError(error, "syncUserToBrevoContact", {
@@ -88,7 +88,7 @@ async function sendPromotionalEmail(): Promise<void> {
       recipients,
       BrevoTemplates.EXAMPLE_TEMPLATE_ONE
     );
-    logger.info("Promotional email sent", { messageId: result.messageId });
+    logger.info("Promotional email sent", { messageId: result.body.messageId });
   } catch (error: any) {
     await handleBrevoError(error, "sendPromotionalEmail");
   }
@@ -97,7 +97,7 @@ async function sendPromotionalEmail(): Promise<void> {
 async function sendTransactionalEmailToUser(
   userId: number,
   transactionType: string
-): Promise<BrevoResponse> {
+): Promise<BrevoResponse | void> {
   const user = users.find((user) => user.id === userId);
   if (!user) {
     throw new Error(`User not found: ${userId}`);
@@ -123,7 +123,7 @@ async function sendTransactionalEmailToUser(
     logger.info("Transactional email sent", {
       userId,
       transactionType,
-      messageId: result.messageId,
+      messageId: result.body.messageId,
     });
     return result;
   } catch (error: any) {
